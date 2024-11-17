@@ -11,8 +11,7 @@ jobs:
 
       - name: step 2 - run k6 load test
         uses: grafana/setup-k6-action@v1
-        with:
-          path: |
-              ./Mao_na_massa/smoke.js
+        run:
+          k6 run ./Mao_na_massa/smoke.js
 
 
