@@ -1,4 +1,5 @@
 name: Run k6 test
+
 on: [push]
 
 jobs:
@@ -6,12 +7,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: step 1 - checkout
-        uses: grafana/setup-k6-action@v1
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: step 2 - run k6 load test
-        uses: grafana/setup-k6-action@v1
-        with:
-          filename: Mao_na_massa/smoke.js
+      - name: Install k6
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apt-transport-https
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys CC86BB64
+          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install -y k6
 
-
+      - name: Run k6 load test
+        run: k6 run Mao_na_massa/smoke.js
+        env:
+          URL: https://test-api.k6.io
