@@ -1,31 +1,26 @@
-name: Run k6 test
+name: Run k6 tests
 on: [push]
 
 jobs:
-  k6-load-test:
+  k6-load-tests:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install k6
+      - name: Run all k6 scripts
         run: |
-          sudo apt-get update
-          sudo apt-get install -y gnupg
-          curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt-get update
-          sudo apt-get install -y k6
-
-      - name: Run k6 load test
-        run: |
-          k6 run Mao_na_massa/smoke.js
+          for script in Mao_na_massa/smoke.js; do
+            echo "Running $script"
+            docker run --rm -v $PWD:/scripts -w /scripts grafana/k6 run "$script"
+        env:
+          PWD: ${{ github.workspace }}
 
       - run: ls & mkdir report & mv index.html report
 
       - name: last step - upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: my-artifact
           path: report   
