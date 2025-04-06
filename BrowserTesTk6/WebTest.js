@@ -16,6 +16,12 @@ export const options = {
         browser_web_vital_lcp: ['p(90) < 1000'],
         
     },
+    ext:{
+        loadimpact: {
+            projectID: '3724609',
+            name: 'K6 Mão na Massa'
+        }
+    }
 };
 
 export default async function () {
